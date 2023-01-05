@@ -5,4 +5,52 @@
 body {
   margin: 0;
   height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  background-color: #F5F7FB;
+  background-image: url("./images/lemon-blob.svg"), url("./images/blue-blob.svg");
+  background-repeat: no-repeat, no-repeat;
+  background-position: top right, bottom left;
+}
+
+main {
+  font-family: 'Inter';
+  color: #293264;
+  display: flex;
+  flex-direction: column;
+}
+
+.main-text {
+  font-family: 'Karla';
+  font-weight: 700;
+}
+
+.game-title {
+  font-size: 31px;
+  text-align: center;
+  margin-bottom: 0;
+}
+
+.game-description {
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 19px;
+}
+
+.start-game {
+  width: 193px;
+  height: 52px;
+  background: #4D5B9E;
+  font-family: 'Inter';
+  color: #F5F7FB;
+  font-weight: 600;
+  border-radius: 15px;
+  border: none;
+  cursor: pointer;
+
+
+  margin-top: 23px;
+  align-self: center;
 }
