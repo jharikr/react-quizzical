@@ -1,8 +1,7 @@
-function Question() {
+function Question({ id, question, answers, selected, onChange }) {
     return (
-        <div>
-
-        </div>
+        <>
+        </>
     )
 }
 
