@@ -1,16 +1,15 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { nanoid } from "nanoid"
+import { decoder, shuffle } from "./utilities/helpers"
 import Welcome from './components/Welcome'
-import Question from './components/Question'
-import testData from "./data/testData"
 import './App.css'
 
 const INITIAL_STATE = {
   quizState: {
     startQuiz: false,
-    checkAnswers: false
+    checkAnswers: false,
   },
-  formData: testData,
+  formData: [],
   score: 0
 }
 
@@ -18,6 +17,26 @@ function App() {
   const [quizState, setQuizState] = useState(INITIAL_STATE.quizState)
   const [formData, setFormData] = useState(INITIAL_STATE.formData);
   const [score, setScore] = useState(INITIAL_STATE.score);
+
+  useEffect(() => {
+    const getQuestions = async () => {
+      const res = await fetch("https://opentdb.com/api.php?amount=10")
+      const { results } = await res.json()
+
+      const questions = results.map(({ question, correct_answer, incorrect_answers, type }) => {
+        return ({
+          question: decoder(question),
+          correctAnswer: correct_answer,
+          answers: type === "multiple" ? shuffle([correct_answer, ...incorrect_answers]) : ["True", "False"],
+          selectedAnswer: "",
+          id: nanoid()
+        })
+      })
+      setFormData(questions)
+    }
+    getQuestions()
+    console.log("API FETCHED")
+  }, [quizState.startQuiz])
 
   function startQuiz(event) {
     setQuizState(prevState => ({
@@ -52,10 +71,9 @@ function App() {
       ...prevState,
       checkAnswers: !prevState.checkAnswers
     }))
-    console.log("Running")
   }
 
-  const answersElements = (answers, question, selected) => {
+  const answersElements = (question, answers, selected) => {
     return answers.map(answer => {
       return (
         <label htmlFor={answer} key={nanoid()}>
@@ -66,6 +84,7 @@ function App() {
             value={answer}
             onChange={handleChange}
             checked={selected === answer}
+          // required
           />
           {answer}
         </label>
@@ -74,11 +93,11 @@ function App() {
   }
 
   const questions = (questions) => {
-    return questions.map(question => {
+    return questions?.map(({ question, answers, selected }) => {
       return (
         <fieldset key={nanoid()}>
-          <legend>{question.question}</legend>
-          {answersElements([...question.incorrectAnswers, question.correctAnswer], question.question, question.selectedAnswer)}
+          <legend>{question}</legend>
+          {answersElements(question, answers, selected)}
         </fieldset>
       )
     })
@@ -94,7 +113,7 @@ function App() {
             {questions(formData)}
             {
               !quizState.checkAnswers ?
-                <button type="submit" className="start-game">Check Answers</button>
+                <button type="submit" id="check-answers" className="start-game">Check Answers</button>
                 :
                 <div>
                   <span>{score}</span>
