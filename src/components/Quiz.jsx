@@ -13,7 +13,7 @@ function Quiz({ formData, checkAnswers, score, onChange, onSubmit, reset }) {
                         value={answer}
                         onChange={onChange}
                         checked={selected === answer}
-                    // required
+                        required
                     />
                     <label htmlFor={answer}>{answer}</label>
                 </Fragment>
