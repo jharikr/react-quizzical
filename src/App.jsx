@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"
-import { nanoid } from "nanoid"
 import { decoder, shuffle } from "./utilities/helpers"
 import Welcome from './components/Welcome'
+import Quiz from './components/Quiz'
 import './App.css'
 
 const INITIAL_STATE = {
@@ -24,18 +24,17 @@ function App() {
       const { results } = await res.json()
 
       const questions = results.map(({ question, correct_answer, incorrect_answers, type }) => {
+        const cleanAns = shuffle([correct_answer, ...incorrect_answers]).map(decoder)
         return ({
           question: decoder(question),
           correctAnswer: correct_answer,
-          answers: type === "multiple" ? shuffle([correct_answer, ...incorrect_answers]) : ["True", "False"],
+          answers: type === "multiple" ? cleanAns : ["True", "False"],
           selectedAnswer: "",
-          id: nanoid()
         })
       })
       setFormData(questions)
     }
     getQuestions()
-    console.log("API FETCHED")
   }, [quizState.startQuiz])
 
   function startQuiz(event) {
@@ -73,54 +72,20 @@ function App() {
     }))
   }
 
-  const answersElements = (question, answers, selected) => {
-    return answers.map(answer => {
-      return (
-        <label htmlFor={answer} key={nanoid()}>
-          <input
-            type="radio"
-            id={answer}
-            name={question}
-            value={answer}
-            onChange={handleChange}
-            checked={selected === answer}
-          // required
-          />
-          {answer}
-        </label>
-      )
-    })
-  }
-
-  const questions = (questions) => {
-    return questions?.map(({ question, answers, selected }) => {
-      return (
-        <fieldset key={nanoid()}>
-          <legend>{question}</legend>
-          {answersElements(question, answers, selected)}
-        </fieldset>
-      )
-    })
-  }
-
   return (
     <main>
       {
         !quizState.startQuiz ?
           <Welcome onClick={startQuiz} />
           :
-          <form onSubmit={handleSubmit}>
-            {questions(formData)}
-            {
-              !quizState.checkAnswers ?
-                <button type="submit" id="check-answers" className="start-game">Check Answers</button>
-                :
-                <div>
-                  <span>{score}</span>
-                  <button type="reset" className="start-game" onClick={resetQuiz}>Play Again</button>
-                </div>
-            }
-          </form>
+          <Quiz
+            formData={formData}
+            checkAnswers={quizState.checkAnswers}
+            score={score}
+            onChange={handleChange}
+            onSubmit={handleSubmit}
+            reset={resetQuiz}
+          />
       }
     </main>
   )
