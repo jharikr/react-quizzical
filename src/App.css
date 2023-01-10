@@ -4,11 +4,9 @@
 
 body {
   margin: 0;
-  height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-
   background-color: #F5F7FB;
   background-image: url("./images/lemon-blob.svg"), url("./images/blue-blob.svg");
   background-repeat: no-repeat, no-repeat;
@@ -18,13 +16,16 @@ body {
 main {
   font-family: 'Inter';
   color: #293264;
-  display: flex;
-  flex-direction: column;
 }
 
 .main-text {
   font-family: 'Karla';
   font-weight: 700;
+}
+
+.welcome {
+  height: 100vh;
+  text-align: center;
 }
 
 .game-title {
@@ -39,7 +40,7 @@ main {
   line-height: 19px;
 }
 
-.start-game {
+.btn {
   width: 193px;
   height: 52px;
   background: #4D5B9E;
@@ -49,7 +50,64 @@ main {
   border-radius: 15px;
   border: none;
   cursor: pointer;
+}
 
+.btn--start-game {
   margin-top: 23px;
   align-self: center;
+}
+
+form {
+  max-width: 800px;
+  padding: 40px;
+}
+
+fieldset {
+  margin: 15px;
+  border: none;
+}
+
+fieldset>legend {
+  font-size: 16px;
+  line-height: 19px;
+}
+
+fieldset>label {
+  font-weight: 500;
+  font-size: 10.24px;
+  line-height: 12px;
+  cursor: pointer;
+}
+
+input {
+  opacity: 0;
+  position: fixed;
+  width: 0;
+}
+
+label {
+  display: inline-block;
+  padding: 5px 8px;
+  margin-right: 13px;
+  background: #F5F7FB;
+  border: 0.794239px solid #4D5B9E;
+  border-radius: 7.94239px;
+}
+
+input[type=radio]:checked+label {
+  background: #D6DBF5;
+}
+
+hr {
+  border: 0.794239px solid #DBDEF0;
+}
+
+.form--btn {
+  text-align: center;
+  padding: 20px;
+}
+
+.score {
+  font-weight: 700;
+  padding-right: 22px;
 }

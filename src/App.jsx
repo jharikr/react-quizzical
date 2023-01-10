@@ -18,36 +18,44 @@ function App() {
   const [formData, setFormData] = useState(INITIAL_STATE.formData);
   const [score, setScore] = useState(INITIAL_STATE.score);
 
-  useEffect(() => {
-    const getQuestions = async () => {
-      const res = await fetch("https://opentdb.com/api.php?amount=10")
-      const { results } = await res.json()
+  const getQuestions = async () => {
+    const res = await fetch("https://opentdb.com/api.php?amount=10&type=multiple")
+    const { results } = await res.json()
 
-      const questions = results.map(({ question, correct_answer, incorrect_answers, type }) => {
-        const cleanAns = shuffle([correct_answer, ...incorrect_answers]).map(decoder)
-        return ({
-          question: decoder(question),
-          correctAnswer: correct_answer,
-          answers: type === "multiple" ? cleanAns : ["True", "False"],
-          selectedAnswer: "",
-        })
+    const questions = results.map(({ question, correct_answer, incorrect_answers, type }) => {
+      const cleanAns = shuffle([correct_answer, ...incorrect_answers]).map(decoder)
+      return ({
+        question: decoder(question),
+        correctAnswer: correct_answer,
+        answers: type === "multiple" ? cleanAns : ["True", "False"],
+        selectedAnswer: "",
       })
-      setFormData(questions)
-    }
-    getQuestions()
-  }, [quizState.startQuiz])
+    })
+    setFormData(questions)
+  }
 
-  function startQuiz(event) {
+  function startQuiz() {
     setQuizState(prevState => ({
       ...prevState,
       startQuiz: !prevState.startQuiz
     }))
   }
 
-  function resetQuiz(event) {
+  function resetQuiz() {
     setFormData(INITIAL_STATE.formData)
     setQuizState(INITIAL_STATE.quizState)
     setScore(INITIAL_STATE.score)
+  }
+
+  function handleQuiz(event) {
+    const { id } = event.target
+
+    if (id === 'start-quiz') {
+      startQuiz()
+      getQuestions()
+      return
+    }
+    resetQuiz()
   }
 
   function handleChange(event) {
@@ -76,7 +84,7 @@ function App() {
     <main>
       {
         !quizState.startQuiz ?
-          <Welcome onClick={startQuiz} />
+          <Welcome onClick={handleQuiz} />
           :
           <Quiz
             formData={formData}
@@ -84,7 +92,7 @@ function App() {
             score={score}
             onChange={handleChange}
             onSubmit={handleSubmit}
-            reset={resetQuiz}
+            reset={handleQuiz}
           />
       }
     </main>

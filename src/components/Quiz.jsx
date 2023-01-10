@@ -1,10 +1,11 @@
+import { Fragment } from "react"
 import { nanoid } from "nanoid"
 
 function Quiz({ formData, checkAnswers, score, onChange, onSubmit, reset }) {
     const answersElements = (question, answers, selected) => {
         return answers.map(answer => {
             return (
-                <label htmlFor={answer} key={nanoid()}>
+                <Fragment key={nanoid()}>
                     <input
                         type="radio"
                         id={answer}
@@ -12,10 +13,10 @@ function Quiz({ formData, checkAnswers, score, onChange, onSubmit, reset }) {
                         value={answer}
                         onChange={onChange}
                         checked={selected === answer}
-                        required
+                    // required
                     />
-                    {answer}
-                </label>
+                    <label htmlFor={answer}>{answer}</label>
+                </Fragment>
             )
         })
     }
@@ -23,10 +24,13 @@ function Quiz({ formData, checkAnswers, score, onChange, onSubmit, reset }) {
     const questions = (questions) => {
         return questions?.map(({ question, answers, selectedAnswer }) => {
             return (
-                <fieldset key={nanoid()}>
-                    <legend>{question}</legend>
-                    {answersElements(question, answers, selectedAnswer)}
-                </fieldset>
+                <div key={nanoid()}>
+                    <fieldset>
+                        <legend className="main-text">{question}</legend>
+                        {answersElements(question, answers, selectedAnswer)}
+                    </fieldset>
+                    <hr />
+                </div>
             )
         })
     }
@@ -36,11 +40,14 @@ function Quiz({ formData, checkAnswers, score, onChange, onSubmit, reset }) {
             {questions(formData)}
             {
                 !checkAnswers ?
-                    <button type="submit" id="check-answers" className="start-game">Check Answers</button>
+                    <div className="form--btn">
+                        <button type="submit" className="btn btn--form">Check Answers</button>
+                    </div>
+
                     :
-                    <div>
-                        <span>{score}</span>
-                        <button type="reset" className="start-game" onClick={reset}>Play Again</button>
+                    <div className="form--btn">
+                        <span className="score">{`You scored ${score}/${formData.length} correct answers`}</span>
+                        <button type="reset" className="btn " onClick={reset}>Play Again</button>
                     </div>
             }
         </form>
